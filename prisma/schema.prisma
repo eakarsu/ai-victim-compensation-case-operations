@@ -1,0 +1,358 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model CompensationCase {
+ id String @id @default(cuid())
+ name String
+ caseNumber String
+ applicantReference String
+ program String
+ incidentAt DateTime
+ submittedAt DateTime
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseExpenseClaim_compensationCaseId ExpenseClaim[] @relation("ExpenseClaim_compensationCaseId")
+ inversePayerOffset_compensationCaseId PayerOffset[] @relation("PayerOffset_compensationCaseId")
+ inverseCaseDocument_compensationCaseId CaseDocument[] @relation("CaseDocument_compensationCaseId")
+ inverseEligibilityReview_compensationCaseId EligibilityReview[] @relation("EligibilityReview_compensationCaseId")
+ inverseExpenseDecision_compensationCaseId ExpenseDecision[] @relation("ExpenseDecision_compensationCaseId")
+ inverseAwardDecision_compensationCaseId AwardDecision[] @relation("AwardDecision_compensationCaseId")
+ inverseCasePayment_compensationCaseId CasePayment[] @relation("CasePayment_compensationCaseId")
+ inverseCompensationAppeal_compensationCaseId CompensationAppeal[] @relation("CompensationAppeal_compensationCaseId")
+ inverseOperationalTask_compensationCaseId OperationalTask[] @relation("OperationalTask_compensationCaseId")
+ inverseRuleVersion_compensationCaseId RuleVersion[] @relation("RuleVersion_compensationCaseId")
+ inverseDocumentRequirement_compensationCaseId DocumentRequirement[] @relation("DocumentRequirement_compensationCaseId")
+}
+
+model ExpenseClaim {
+ id String @id @default(cuid())
+ title String
+ category String
+ incurredAt DateTime
+ provider String
+ claimedCents Int
+ currency String
+ evidence String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("ExpenseClaim_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+ inversePayerOffset_expenseClaimId PayerOffset[] @relation("PayerOffset_expenseClaimId")
+ inverseExpenseDecision_expenseClaimId ExpenseDecision[] @relation("ExpenseDecision_expenseClaimId")
+}
+
+model PayerOffset {
+ id String @id @default(cuid())
+ title String
+ expenseClaimId String
+ payer String
+ receivedCents Int
+ receivedAt DateTime
+ evidence String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedExpenseClaimId ExpenseClaim @relation("PayerOffset_expenseClaimId", fields: [expenseClaimId], references: [id], onDelete: Restrict)
+ linkedCompensationCaseId CompensationCase @relation("PayerOffset_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model CaseDocument {
+ id String @id @default(cuid())
+ title String
+ documentType String
+ sourceReference String
+ receivedAt DateTime
+ description String
+ author String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("CaseDocument_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model EligibilityReview {
+ id String @id @default(cuid())
+ title String
+ reviewer String
+ reviewedAt DateTime
+ ruleVersion String
+ findings String
+ decisionRationale String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("EligibilityReview_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model ExpenseDecision {
+ id String @id @default(cuid())
+ title String
+ expenseClaimId String
+ allowedCents Int
+ reason String
+ decisionAt DateTime
+ reviewer String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedExpenseClaimId ExpenseClaim @relation("ExpenseDecision_expenseClaimId", fields: [expenseClaimId], references: [id], onDelete: Restrict)
+ linkedCompensationCaseId CompensationCase @relation("ExpenseDecision_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model AwardDecision {
+ id String @id @default(cuid())
+ title String
+ awardedCents Int
+ ruleVersion String
+ decidedAt DateTime
+ authorizedBy String
+ rationale String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("AwardDecision_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model CasePayment {
+ id String @id @default(cuid())
+ title String
+ paidAt DateTime
+ payee String
+ amountCents Int
+ method String
+ receipt String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("CasePayment_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model CompensationAppeal {
+ id String @id @default(cuid())
+ title String
+ submittedAt DateTime
+ reason String
+ additionalEvidence String
+ responseDueAt DateTime
+ reviewer String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("CompensationAppeal_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("OperationalTask_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("RuleVersion_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ compensationCaseId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([compensationCaseId])
+ linkedCompensationCaseId CompensationCase @relation("DocumentRequirement_compensationCaseId", fields: [compensationCaseId], references: [id], onDelete: Restrict)
+}

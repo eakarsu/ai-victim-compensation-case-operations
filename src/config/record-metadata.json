@@ -1,0 +1,619 @@
+{
+  "CompensationCase": {
+    "name": "CompensationCase",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "caseNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "applicantReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "program",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "incidentAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "submittedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "ExpenseClaim": {
+    "name": "ExpenseClaim",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "incurredAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "provider",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "claimedCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "currency",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "PayerOffset": {
+    "name": "PayerOffset",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "expenseClaimId",
+        "kind": "string",
+        "required": true,
+        "relation": "ExpenseClaim"
+      },
+      {
+        "name": "payer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "receivedCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "receivedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "CaseDocument": {
+    "name": "CaseDocument",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "documentType",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "receivedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "description",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "author",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "EligibilityReview": {
+    "name": "EligibilityReview",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "ruleVersion",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "findings",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "decisionRationale",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "ExpenseDecision": {
+    "name": "ExpenseDecision",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "expenseClaimId",
+        "kind": "string",
+        "required": true,
+        "relation": "ExpenseClaim"
+      },
+      {
+        "name": "allowedCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "reason",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "decisionAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reviewer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "AwardDecision": {
+    "name": "AwardDecision",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "awardedCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "ruleVersion",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "decidedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "authorizedBy",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "rationale",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "CasePayment": {
+    "name": "CasePayment",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "paidAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "payee",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "amountCents",
+        "kind": "number",
+        "required": true,
+        "integer": true,
+        "min": 0
+      },
+      {
+        "name": "method",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "CompensationAppeal": {
+    "name": "CompensationAppeal",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "submittedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reason",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "additionalEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "responseDueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reviewer",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "compensationCaseId",
+        "kind": "string",
+        "required": true,
+        "relation": "CompensationCase"
+      }
+    ],
+    "parent": {
+      "entity": "CompensationCase",
+      "field": "compensationCaseId"
+    }
+  }
+}

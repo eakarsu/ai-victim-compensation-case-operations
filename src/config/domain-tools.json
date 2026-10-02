@@ -1,0 +1,56 @@
+[
+  {
+    "id": "domain-calculation",
+    "title": "Expense offset calculation",
+    "operation": "offsets",
+    "example": {
+      "ruleSource": "Fictional demonstration rule v1; replace with reviewed applicable terms",
+      "claimCents": 100000,
+      "allowedCents": 80000,
+      "otherPayerCents": 30000,
+      "programCapCents": 60000
+    },
+    "description": "Calculate a reviewed-expense net amount after payer offsets and entered cap; no eligibility decision or disbursement."
+  },
+  {
+    "id": "evidence-check",
+    "operation": "evidence",
+    "title": "Compensation Case evidence checklist",
+    "description": "Check source presence against an explicitly supplied document list; reviewer assesses adequacy.",
+    "example": {
+      "requirements": [
+        {
+          "id": "source-1",
+          "requirement": "Expense Claim evidence",
+          "evidence": "Example source reference"
+        },
+        {
+          "id": "source-2",
+          "requirement": "Reviewed rule version",
+          "evidence": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "deadline-check",
+    "operation": "deadlines",
+    "title": "Operational deadline queue",
+    "description": "Compute overdue items from entered dates and completed flags; no external notifications.",
+    "example": {
+      "asOf": "2026-10-20T12:00:00Z",
+      "items": [
+        {
+          "id": "review-1",
+          "dueAt": "2026-10-18T00:00:00Z",
+          "completed": false
+        },
+        {
+          "id": "follow-up-1",
+          "dueAt": "2026-10-23T00:00:00Z",
+          "completed": false
+        }
+      ]
+    }
+  }
+]
